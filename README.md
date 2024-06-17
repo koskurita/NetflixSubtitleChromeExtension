@@ -16,8 +16,10 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 &nbsp;&nbsp;&nbsp;&nbsp;
 Side note, this chrome extension uses your browser's native translator, because google translate API costs $$. It's a little annoying but it's a workaround that works ¯\_(ツ)_/¯.
+
 4. Select the chrome extension, and click on the button so it's on.
-5. Now, you will have two subtitles, one in original and one in your target language.
+
+6. Now, you will have two subtitles, one in original and one in your target language.
 
 ## Functionalities to add
 1. Setting for text size and color.
