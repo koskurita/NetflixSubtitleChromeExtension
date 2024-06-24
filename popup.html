@@ -9,13 +9,20 @@
 </head>
 <body>
     <h1>Subtitle Translator</h1>
-    <label for="languageSelect">Select Language:</label>
-    <select id="languageSelect">
-        <option value="es">Spanish</option>
-        <option value="fr">French</option>
-        <option value="de">German</option>
-        <!-- Add more languages as needed -->
-    </select>
+    <form id="boxWidthSlider">
+        <label for="boxWidth">Width</label>
+        <input name="boxWidth" type='range' id="adjustBoxWidth" min="1" max="100" value="30"/>
+        <output  id="boxWidthOutput" name="result" for="adjustBoxWidth" form="boxWidthForm"></output>
+    </form>
+
+    <form id="fontSizeSlider">
+        <label for="fontSize">Font Size</label>
+        <input name="fontSize" type='range' id="adjustFontSize" min="15" max="60" value="31"/>
+        <output id ="fontSizeOutput" name='fontSizeOutput' for="adjustFontSize" form="fontSizeForm"></output>
+        <div id="displayFontSize">a A</div>
+    </form>
+
+    
     <script src="popup.js"></script>
 </body>
 </html>

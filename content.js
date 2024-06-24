@@ -1,19 +1,11 @@
-// // wait for Netflix to load its elements
-// observer.observe(document.documentElement, { childList: true, subtree: true });
+
+// add feature to hide original subtitle
+//add feature to resize
 
 let subtitleToTranslate = "";
-let subtitleTranslated = "";
 let parsedLines = [];
-let currentContainer;
+let subtitleTextBox;
 
-let customSubtitle = document.createElement("div");
-
-// class Subtitle {
-//     constructor() {
-//       this.translated = False;
-//       this.subtitleString = "";
-//     }
-//   }
 
 function waitForElement(selector) {
   return new Promise((resolve) => {
@@ -28,41 +20,13 @@ function waitForElement(selector) {
       }
     });
 
-    // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
     observer.observe(document.body, {
       childList: true,
       subtree: true,
     });
   });
 }
-let x = 0;
 
-
-// create a hidden textbox to use to get value for translation
-function createElementForTranslation() {
-  const textToTranslateContainer = document.createElement("div");
-  textToTranslateContainer.style.visibility = "hidden";
-  textToTranslateContainer.classList.add("my-subtitle-to-translate");
-
-
-  //observe for change in the text to be translated
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      console.log(mutation.target.textContent);
-      addTranslatedSubtitle(mutation.target.textContent);
-
-    });
-  });
-  observer.observe(textToTranslateContainer, {
-    // childList: true,
-    characterData: true,
-    attributes: false,
-    childList: false,
-    subtree: true,
-  });
-
-  return textToTranslateContainer;
-}
 
 
 
@@ -71,41 +35,22 @@ function sendToTranslator(subtitle, changedContainer) {
   if (subtitle == subtitleToTranslate) {
     return;
   }
-
-  console.log(subtitle);
-  // update global variable
   subtitleToTranslate = subtitle;
-  currentContainer = changedContainer
+  currentContainer = changedContainer;
 
   let textToTranslateContainer = document.querySelector(
     ".my-subtitle-to-translate"
   );
   textToTranslateContainer.textContent = subtitle;
-
 }
 
-// function addTranslatedSubtitle(translatedSubtitle){
-//     customSubtitle.textContent = ""
 
-//   console.log(currentContainer.children.innerHTML)
-//     currentContainer.children.forEach((timedTextBox)=>{
-//         let newContainer = document.createElement("div");
-//         [...timedTextBox.attributes].forEach(({name, value}) =>{
-//             newContainer.setAttribute(name, value);
-//             }
-//         );
-//         newContainer.innerHTML = translatedSubtitle;
-//         customSubtitle.insertAdjacentElement("beforeend", newContainer)
-//     }
-//     )
+function addTranslatedSubtitle(translatedSubtitle) {
+    actualTextContainer.textContent = translatedSubtitle
+}
 
-//     let newEl = document.createElement('div');
 
-//     newEl.textContent = translatedSubtitle
-//     customSubtitle.insertAdjacentElement("afterbegin",newEl)
-// }
-
-function parseSubtitle(mutations, observer) {
+function trackChanges(mutations, observer) {
   //Netflix prints dialogue in seperate containers, so to get the final string we have to iterate and combine.
   mutations.forEach((mutation) => {
     if (mutation.addedNodes.length >= 1) {
@@ -116,24 +61,107 @@ function parseSubtitle(mutations, observer) {
       }
       sendToTranslator(parsedLines.join(" "), mutation.target);
     }
-    
+    if (mutation.type == "attributes"){
+        
+        if (mutation.target.getAttribute("class") == "player-timedtext"){
+            subtitleTextBox.setAttribute("style", mutation.target.getAttribute("style"))
+        }
+        // console.log(mutation.target.getAttribute("class"))
+    }
+
   });
 }
+
+
+// create a hidden textbox to use to get value for translation
+function createTranslationContainer() {
+    const textToTranslateContainer = document.createElement("div");
+    textToTranslateContainer.style.visibility = "hidden";
+    textToTranslateContainer.classList.add("my-subtitle-to-translate");
+  
+    //observe for change in the text to be translated
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        // console.log(mutation.target.textContent);                    0000!!!
+        addTranslatedSubtitle(mutation.target.textContent);
+      });
+    });
+    observer.observe(textToTranslateContainer, {
+      // childList: true,
+      characterData: true,
+      attributes: false,
+      childList: false,
+      subtree: true,
+    });
+  
+    return textToTranslateContainer;
+  }
+
+  function createMySubtitleContainer(containerStyle){
+    let customSubtitle = document.createElement("div");
+    customSubtitle.setAttribute("class", "my-player-timedtext");
+    customSubtitle.setAttribute("style", containerStyle);
+    subtitleTextBox = customSubtitle;
+    return customSubtitle;
+  }
+
+// left: 50%;
+// top: 50%;
+
+let actualTextContainer = document.createElement('div');
+actualTextContainer.setAttribute("class", "my-player-timedtext-two");
+actualTextContainer.setAttribute("id", "mySubtitle");
+actualTextContainer.style.cssText = `
+position: fixed;
+display: inline-block;
+max-width: 30%;
+padding: 10px 10px;
+font-size:26px;
+color:#ffffff;
+text-shadow:#000000 0px 0px 7px;
+font-family:Netflix Sans,Helvetica Nueue,Helvetica,Arial,sans-serif;
+font-weight:bolder;
+cursor: move;
+user-select: none;
+overflow: auto;
+`
+
+function onDrag(e) {
+    // we could make them global variables instead
+    const {width, height} = window.getComputedStyle(actualTextContainer);
+    actualTextContainer.style.transform = `translate(${e.clientX - +width.replace("px", "") / 2}px, ${e.clientY - +height.replace("px", "") / 2}px)`;
+  }
+  
+  function onLetGo() {
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', onLetGo);
+  }
+  
+  function onGrab() {
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', onLetGo);
+  }
+  
+  actualTextContainer.addEventListener('mousedown', onGrab);
+
+
 
 
 waitForElement(".player-timedtext").then((subtitleContainer) => {
   console.log("Element is ready");
 
-  // create custom Subtitle
-//   let customSubtitle = document.createElement("div");
+  // create custom Subtitle with original attributes
   let containerStyle = subtitleContainer.getAttribute("style");
-  let textToTranslateContainer = createElementForTranslation();
-  customSubtitle.insertAdjacentElement("afterbegin", textToTranslateContainer);
+  let customSubtitle = createMySubtitleContainer(containerStyle)
 
-  customSubtitle.setAttribute("style", containerStyle);
-  customSubtitle.setAttribute("class", ".my-player-timedtext");
+  //create hidden textbox used to get translated text
+  let textToTranslateContainer = createTranslationContainer();
+
+
   subtitleContainer.insertAdjacentElement("beforebegin", customSubtitle);
+  customSubtitle.insertAdjacentElement("beforebegin", textToTranslateContainer);
+  document.body.insertAdjacentElement("beforeend",actualTextContainer)
 
-  const observer = new MutationObserver(parseSubtitle);
-  observer.observe(subtitleContainer, { childList: true, subtree: true });
+  const observer = new MutationObserver(trackChanges);
+  observer.observe(subtitleContainer, { childList: true, subtree: true, attributes: true});
 });

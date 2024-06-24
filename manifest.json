@@ -9,7 +9,7 @@
       "storage"
     ],
     "host_permissions": [
-      "https://www.netflix.com/*"
+      "https://www.netflix.com/watch/*"
     ],
     "background": {
       "service_worker": "background.js"
