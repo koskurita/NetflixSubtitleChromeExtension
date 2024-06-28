@@ -1,10 +1,15 @@
 
-// add feature to hide original subtitle
+
 //add feature to resize
+//add feature to set width
+//add feature change location of text
+//save location of the text
+//add functionality to remove original text
+//fix bug where subtitle persists
 
 let subtitleToTranslate = "";
-let parsedLines = [];
 let subtitleTextBox;
+let actualTextContainer;
 
 
 function waitForElement(selector) {
@@ -31,17 +36,16 @@ function waitForElement(selector) {
 
 
 // take in the string to see if it has updated. if it has, send it to translate. else ignore.
-function sendToTranslator(subtitle, changedContainer) {
+function sendToTranslator(subtitle) {
+    console.log(subtitle)
   if (subtitle == subtitleToTranslate) {
     return;
   }
-  subtitleToTranslate = subtitle;
-  currentContainer = changedContainer;
-
-  let textToTranslateContainer = document.querySelector(
-    ".my-subtitle-to-translate"
-  );
-  textToTranslateContainer.textContent = subtitle;
+  if (subtitle){
+    subtitleToTranslate = subtitle;
+    let textToTranslateContainer = document.querySelector(".my-subtitle-to-translate");
+    textToTranslateContainer.textContent = subtitle;
+  }
 }
 
 
@@ -50,27 +54,43 @@ function addTranslatedSubtitle(translatedSubtitle) {
 }
 
 
-function trackChanges(mutations, observer) {
+// dialogue observer
+function captureNewDialogue(mutations, observer) {
   //Netflix prints dialogue in seperate containers, so to get the final string we have to iterate and combine.
   mutations.forEach((mutation) => {
-    if (mutation.addedNodes.length >= 1) {
+
+    // might have to ensure that its the right node added; .player-timedtext-text-container
+    if (mutation.addedNodes.length > 0) {
       // to keep the original text from being translated.
       mutation.addedNodes[0].setAttribute("translate", "no");
+
+    // parse individual lines
+      let parsedLines = [];
       for (let i = 0; i < mutation.target.children.length; i++) {
         parsedLines[i] = mutation.target.children[i].textContent;
       }
-      sendToTranslator(parsedLines.join(" "), mutation.target);
+      sendToTranslator(parsedLines.join(" "));
     }
-    if (mutation.type == "attributes"){
-        
-        if (mutation.target.getAttribute("class") == "player-timedtext"){
-            subtitleTextBox.setAttribute("style", mutation.target.getAttribute("style"))
-        }
-        // console.log(mutation.target.getAttribute("class"))
-    }
-
   });
 }
+
+// observer to see if display: none, to hide subtitle during long pauses. Since there is nothing to be translated, change the caption directly.
+function detectHideDialogue(mutations, observer){
+    // console.log(mutations)
+    mutations.forEach((mutation) => {
+        if (mutation.target.style.display == "none"){
+            // need to send to translator so the subtitle to translate is updated to match.
+            sendToTranslator(" ")
+            actualTextContainer.textContent = " "
+        }
+        // console.log(mutation.target.style.display)
+    })
+
+}
+
+
+
+
 
 
 // create a hidden textbox to use to get value for translation
@@ -82,7 +102,7 @@ function createTranslationContainer() {
     //observe for change in the text to be translated
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        // console.log(mutation.target.textContent);                    0000!!!
+        // console.log(mutation.target);     
         addTranslatedSubtitle(mutation.target.textContent);
       });
     });
@@ -97,6 +117,7 @@ function createTranslationContainer() {
     return textToTranslateContainer;
   }
 
+  //create a custom subtitle container
   function createMySubtitleContainer(containerStyle){
     let customSubtitle = document.createElement("div");
     customSubtitle.setAttribute("class", "my-player-timedtext");
@@ -105,31 +126,46 @@ function createTranslationContainer() {
     return customSubtitle;
   }
 
-// left: 50%;
-// top: 50%;
 
-let actualTextContainer = document.createElement('div');
-actualTextContainer.setAttribute("class", "my-player-timedtext-two");
-actualTextContainer.setAttribute("id", "mySubtitle");
-actualTextContainer.style.cssText = `
-position: fixed;
-display: inline-block;
-max-width: 30%;
-padding: 10px 10px;
-font-size:26px;
-color:#ffffff;
-text-shadow:#000000 0px 0px 7px;
-font-family:Netflix Sans,Helvetica Nueue,Helvetica,Arial,sans-serif;
-font-weight:bolder;
-cursor: move;
-user-select: none;
-overflow: auto;
-`
+  // for saving locaiton
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+const saveContainerCoordinates = debounce((val) => {
+    chrome.storage.sync.set({ coordinateValue: val });
+}, 550);
+
+
+function loadStoredValue(key, callback) {
+    chrome.storage.local.get([key], (result) => {
+        if (result[key] !== undefined) {
+            callback(result[key]);
+        } else {
+            // Fallback to local storage if sync storage is empty
+            chrome.storage.sync.get([key], (localResult) => {
+                if (localResult[key] !== undefined) {
+                    callback(localResult[key]);
+                }
+            });
+        }
+    });
+}
+
+
+
 
 function onDrag(e) {
     // we could make them global variables instead
     const {width, height} = window.getComputedStyle(actualTextContainer);
-    actualTextContainer.style.transform = `translate(${e.clientX - +width.replace("px", "") / 2}px, ${e.clientY - +height.replace("px", "") / 2}px)`;
+    const transformValue = `translate(${e.clientX - width.replace("px", "") / 2}px, ${e.clientY - height.replace("px", "") / 2}px)`;
+    actualTextContainer.style.transform = transformValue
+    chrome.storage.local.set({ coordinateValue:  transformValue});
+    saveContainerCoordinates(transformValue)
   }
   
   function onLetGo() {
@@ -141,27 +177,77 @@ function onDrag(e) {
       document.addEventListener('mousemove', onDrag);
       document.addEventListener('mouseup', onLetGo);
   }
+
+function updateTextBoxCoordinates(coordinate) {
+    actualTextContainer.style.transform = coordinate;
+}
+
+  function initializeActualTextContainer() {
+    actualTextContainer = document.createElement('div');
+    actualTextContainer.setAttribute("class", "my-player-timedtext-two");
+    actualTextContainer.setAttribute("id", "mySubtitle");
+    actualTextContainer.style.cssText = `
+        position: fixed;
+        display: inline-block;
+        max-width: 30%;
+        padding: 10px 10px;
+        font-size: 26px;
+        color: #ffffff;
+        text-shadow: #000000 0px 0px 7px;
+        font-family: Netflix Sans, Helvetica Nueue, Helvetica, Arial, sans-serif;
+        font-weight: bolder;
+        cursor: move;
+        user-select: none;
+        overflow: auto;
+    `;
+    actualTextContainer.addEventListener('mousedown', onGrab);
+    document.body.insertAdjacentElement("beforeend", actualTextContainer);
+    loadStoredValue("coordinateValue", updateTextBoxCoordinates)
+}
+
+
+
+
+function initializeSubtitles() {
+    waitForElement(".player-timedtext").then((subtitleContainer) => {
+        console.log("Element is ready");
+
+        // Create custom subtitle with original attributes
+        const containerStyle = subtitleContainer.getAttribute("style");
+        const customSubtitle = createMySubtitleContainer(containerStyle);
+
+        // Create hidden textbox used to get translated text
+        const textToTranslateContainer = createTranslationContainer();
+
+        subtitleContainer.insertAdjacentElement("beforebegin", customSubtitle);
+        customSubtitle.insertAdjacentElement("beforebegin", textToTranslateContainer);
+
+        const newDialogueObserver = new MutationObserver(captureNewDialogue);
+        newDialogueObserver.observe(subtitleContainer, { childList: true, subtree: true});
+        
+        const hideDialogueObserver = new MutationObserver(detectHideDialogue);
+        hideDialogueObserver.observe(subtitleContainer,{ attributes: true, attributeFilter: ["style"], attributeOldValue: true})
+
+    });
+}
+
+
+
+
+initializeActualTextContainer();
+initializeSubtitles();
+
+
+// border transition for background
+function borderTransition(textBox){
+    textBox.style.outline = '1px solid white'; // Show border
+      textBox.style.transition = 'outline-color 1s ease-out';
   
-  actualTextContainer.addEventListener('mousedown', onGrab);
-
-
-
-
-waitForElement(".player-timedtext").then((subtitleContainer) => {
-  console.log("Element is ready");
-
-  // create custom Subtitle with original attributes
-  let containerStyle = subtitleContainer.getAttribute("style");
-  let customSubtitle = createMySubtitleContainer(containerStyle)
-
-  //create hidden textbox used to get translated text
-  let textToTranslateContainer = createTranslationContainer();
-
-
-  subtitleContainer.insertAdjacentElement("beforebegin", customSubtitle);
-  customSubtitle.insertAdjacentElement("beforebegin", textToTranslateContainer);
-  document.body.insertAdjacentElement("beforeend",actualTextContainer)
-
-  const observer = new MutationObserver(trackChanges);
-  observer.observe(subtitleContainer, { childList: true, subtree: true, attributes: true});
-});
+        // Clear any existing timeout
+        clearTimeout(window.borderTimeout);
+  
+        // Set a timeout to hide the border after 1 second
+        window.borderTimeout = setTimeout(() => {
+          textBox.style.outlineColor = 'transparent';
+        }, 75);
+  }

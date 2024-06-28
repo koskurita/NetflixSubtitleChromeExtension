@@ -71,7 +71,8 @@ document.getElementById('adjustBoxWidth').addEventListener('input', (event) => {
     const outputContainer = document.getElementById('boxWidthOutput')
     outputContainer.textContent = `${sliderValue}%`
 
-    chrome.runtime.sendMessage({ action: 'changeContainerWidth', containerWidth: sliderValue });
+    // action = funcname, containerWidth = value
+    chrome.runtime.sendMessage({ action: 'updateContainerWidth', sliderValue: sliderValue });
     chrome.storage.local.set({ containerWidth: sliderValue });
     saveContainerWidth(sliderValue);
 });
@@ -87,8 +88,46 @@ document.getElementById('adjustFontSize').addEventListener('input', (event) => {
     const displayFontSize = document.getElementById("displayFontSize");
     displayFontSize.style.fontSize = `${sliderValue}px`;
 
-    chrome.runtime.sendMessage({ action: 'changeFontSize', fontSize: sliderValue });
+    // action = funcname, containerWidth = value
+    chrome.runtime.sendMessage({ action: 'updateFontSize', sliderValue: sliderValue });
     chrome.storage.local.set({ fontSize: sliderValue });
     saveFontSize(sliderValue);
 
 });
+
+
+
+document.getElementById('resetToDefault').addEventListener("click",(event)=>{
+    const _default_font_size = 31
+    const _default_container_width = 30
+    
+    // reset container width
+    const boxSlider = document.getElementById('adjustBoxWidth')
+    boxSlider.value = _default_container_width
+
+    const boxwidthOutput = document.getElementById('boxWidthOutput')
+    boxwidthOutput.textContent = `${_default_container_width}%`
+    chrome.runtime.sendMessage({ action: 'updateContainerWidth', sliderValue: _default_container_width });
+    chrome.storage.local.set({ containerWidth: _default_container_width });
+    saveContainerWidth(_default_container_width);
+
+
+    //reset font size
+    const fontSlider = document.getElementById('adjustFontSize')
+    fontSlider.value = _default_font_size
+    const outputContainer = document.getElementById('fontSizeOutput')
+    outputContainer.textContent = `${_default_font_size}px`
+
+    const displayFontSize = document.getElementById("displayFontSize");
+    displayFontSize.style.fontSize = `${_default_font_size}px`;
+
+
+    chrome.runtime.sendMessage({ action: 'updateFontSize', sliderValue: _default_font_size });
+    chrome.storage.local.set({ fontSize: _default_font_size });
+    saveFontSize(_default_font_size);
+
+    //reset placement
+    chrome.runtime.sendMessage({ action: 'updateContainerPlacement'});
+
+} )
+
