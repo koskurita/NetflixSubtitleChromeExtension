@@ -10,6 +10,11 @@
 let subtitleToTranslate = "";
 let subtitleTextBox;
 let actualTextContainer;
+let hideCaptions;
+
+function setHideCaptions(val){
+    hideCaptions = val;
+}
 
 
 function waitForElement(selector) {
@@ -37,14 +42,16 @@ function waitForElement(selector) {
 
 // take in the string to see if it has updated. if it has, send it to translate. else ignore.
 function sendToTranslator(subtitle) {
-    console.log(subtitle)
+    // console.log(subtitle)
   if (subtitle == subtitleToTranslate) {
     return;
   }
   if (subtitle){
     subtitleToTranslate = subtitle;
     let textToTranslateContainer = document.querySelector(".my-subtitle-to-translate");
-    textToTranslateContainer.textContent = subtitle;
+    if (textToTranslateContainer !== null ){
+        textToTranslateContainer.textContent = subtitle;
+    }
   }
 }
 
@@ -58,12 +65,17 @@ function addTranslatedSubtitle(translatedSubtitle) {
 function captureNewDialogue(mutations, observer) {
   //Netflix prints dialogue in seperate containers, so to get the final string we have to iterate and combine.
   mutations.forEach((mutation) => {
-
     // might have to ensure that its the right node added; .player-timedtext-text-container
     if (mutation.addedNodes.length > 0) {
       // to keep the original text from being translated.
       mutation.addedNodes[0].setAttribute("translate", "no");
+      if (hideCaptions === true){
+        if (mutation.addedNodes[0].firstChild !== null){
+            mutation.addedNodes[0].firstChild.setAttribute("style", "visibility: hidden")
+            console.log(mutation.addedNodes[0].firstChild.style)
+        }
 
+    }
     // parse individual lines
       let parsedLines = [];
       for (let i = 0; i < mutation.target.children.length; i++) {
@@ -157,8 +169,6 @@ function loadStoredValue(key, callback) {
 }
 
 
-
-
 function onDrag(e) {
     // we could make them global variables instead
     const {width, height} = window.getComputedStyle(actualTextContainer);
@@ -205,12 +215,21 @@ function updateTextBoxCoordinates(coordinate) {
     loadStoredValue("coordinateValue", updateTextBoxCoordinates)
 }
 
+function updateHideCaptions(boolVal){
+    hideCaptions = boolVal
+}
+
+function initializeHideCaption(){
+    loadStoredValue("hideCaptionIsActive", updateHideCaptions)
+
+}
 
 
 
 function initializeSubtitles() {
     waitForElement(".player-timedtext").then((subtitleContainer) => {
         console.log("Element is ready");
+
 
         // Create custom subtitle with original attributes
         const containerStyle = subtitleContainer.getAttribute("style");
@@ -236,6 +255,7 @@ function initializeSubtitles() {
 
 initializeActualTextContainer();
 initializeSubtitles();
+initializeHideCaption();
 
 
 // border transition for background

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // load the stored values
     loadStoredValue('containerWidth', updateContainerWidthUI);
     loadStoredValue('fontSize', updateFontSizeUI);
+    loadStoredValue('hideCaptionIsActive', updateCaptionOnOffUI)
     
     function loadStoredValue(key, callback) {
         chrome.storage.local.get([key], (result) => {
@@ -18,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+    }
+
+    function updateCaptionOnOffUI(captionIsActive){
+        const adjustCaptionCheckBox = document.getElementById('adjustCaption');
+        adjustCaptionCheckBox.checked = captionIsActive
+        console.log(adjustCaptionCheckBox.checked)
     }
 
       function updateContainerWidthUI(containerWidth) {
@@ -62,7 +69,9 @@ const saveFontSize = debounce((sliderValue) => {
     chrome.storage.sync.set({ fontSize: sliderValue });
 }, 550);
 
-
+const saveCaptionsIsAvtive = debounce((captionbool) => {
+    chrome.storage.sync.set({ hideCaptionIsActive: captionbool });
+}, 550);
 
 
 document.getElementById('adjustBoxWidth').addEventListener('input', (event) => {
@@ -131,3 +140,16 @@ document.getElementById('resetToDefault').addEventListener("click",(event)=>{
 
 } )
 
+document.getElementById('adjustCaption').addEventListener("change",(event)=>{
+    // console.log(event.target.checked)
+    if (event.target.checked){
+        chrome.storage.local.set({ hideCaptionIsActive: true });
+        chrome.runtime.sendMessage({ action: 'hideNetflixCaptions', originalCaptionIsActive: true });
+        saveCaptionsIsAvtive(true)
+    } else {
+        chrome.storage.local.set({ hideCaptionIsActive: false });
+        chrome.runtime.sendMessage({ action: 'hideNetflixCaptions', originalCaptionIsActive: false});
+        saveCaptionsIsAvtive(false)
+    }
+
+})

@@ -1,0 +1,7 @@
+.captionsIsOff {
+    display: hide !important;
+}
+
+.player-timedtext-text-container .captionsIsOff {
+    display: hide !important;
+}

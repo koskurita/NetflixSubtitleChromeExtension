@@ -6,10 +6,11 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
-
   if (message.action === 'updateContainerWidth') {
     // Send message to content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log(tabs)
+
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
         func: updateContainerWidth,
@@ -17,11 +18,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
     });
   }
-  
+
   if (message.action === "updateFontSize") {
 
     // Send message to content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log(tabs)
+
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
         func: updateFontSize,
@@ -32,6 +35,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'updateContainerPlacement'){
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log(tabs)
+
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
         func: calculateCenter
@@ -39,7 +44,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
   }
 
+  if (message.action === "hideNetflixCaptions"){
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log(tabs)
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        func: hideNetflixCaptions,
+        args: [message.originalCaptionIsActive]
+      });
+    });
+  }
+
 });
+
+function hideNetflixCaptions(originalCaptionIsActive){
+  setHideCaptions(originalCaptionIsActive)
+  
+}
+
 
 function calculateCenter(){
   const actualTextContainer = document.querySelector(".my-player-timedtext-two")
