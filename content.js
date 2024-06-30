@@ -14,6 +14,16 @@ let hideCaptions;
 
 function setHideCaptions(val){
     hideCaptions = val;
+    if (val === false){
+        document.querySelector('.player-timedtext').classList.remove("captionsIsOff")
+        const allCaptions = document.querySelectorAll(".captionsIsOff")
+        allCaptions.forEach((oneCaption)=>{
+          oneCaption.classList.remove("captionsIsOff")
+        })
+    }
+    else {
+        document.querySelector('.player-timedtext').classList.add("captionsIsOff")
+    }
 }
 
 
@@ -71,7 +81,7 @@ function captureNewDialogue(mutations, observer) {
       mutation.addedNodes[0].setAttribute("translate", "no");
       if (hideCaptions === true){
         if (mutation.addedNodes[0].firstChild !== null){
-            mutation.addedNodes[0].firstChild.setAttribute("style", "visibility: hidden")
+            mutation.addedNodes[0].firstChild.classList.add("captionsIsOff")
             console.log(mutation.addedNodes[0].firstChild.style)
         }
 

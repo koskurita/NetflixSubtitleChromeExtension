@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const outputContainer = document.getElementById('fontSizeOutput');
         outputContainer.textContent = `${fontSize}px`;
 
-        const displayFontSize = document.getElementById('displayFontSize');
-        displayFontSize.style.fontSize = `${fontSize}px`;
+        // const displayFontSize = document.getElementById('displayFontSize');
+        // displayFontSize.style.fontSize = `${fontSize}px`;
     }
 
 });
@@ -94,8 +94,8 @@ document.getElementById('adjustFontSize').addEventListener('input', (event) => {
     const outputContainer = document.getElementById('fontSizeOutput')
     outputContainer.textContent = `${sliderValue}px`
 
-    const displayFontSize = document.getElementById("displayFontSize");
-    displayFontSize.style.fontSize = `${sliderValue}px`;
+    // const displayFontSize = document.getElementById("displayFontSize");
+    // displayFontSize.style.fontSize = `${sliderValue}px`;
 
     // action = funcname, containerWidth = value
     chrome.runtime.sendMessage({ action: 'updateFontSize', sliderValue: sliderValue });
@@ -109,6 +109,7 @@ document.getElementById('adjustFontSize').addEventListener('input', (event) => {
 document.getElementById('resetToDefault').addEventListener("click",(event)=>{
     const _default_font_size = 31
     const _default_container_width = 30
+    const _default_caption_is_active = false;
     
     // reset container width
     const boxSlider = document.getElementById('adjustBoxWidth')
@@ -127,8 +128,8 @@ document.getElementById('resetToDefault').addEventListener("click",(event)=>{
     const outputContainer = document.getElementById('fontSizeOutput')
     outputContainer.textContent = `${_default_font_size}px`
 
-    const displayFontSize = document.getElementById("displayFontSize");
-    displayFontSize.style.fontSize = `${_default_font_size}px`;
+    // const displayFontSize = document.getElementById("displayFontSize");
+    // displayFontSize.style.fontSize = `${_default_font_size}px`;
 
 
     chrome.runtime.sendMessage({ action: 'updateFontSize', sliderValue: _default_font_size });
@@ -137,6 +138,13 @@ document.getElementById('resetToDefault').addEventListener("click",(event)=>{
 
     //reset placement
     chrome.runtime.sendMessage({ action: 'updateContainerPlacement'});
+
+    const captionIsActiveButton = document.getElementById("adjustCaption")
+    captionIsActiveButton.checked = _default_caption_is_active
+    chrome.storage.local.set({ hideCaptionIsActive: _default_caption_is_active });
+    chrome.runtime.sendMessage({ action: 'hideNetflixCaptions', originalCaptionIsActive: _default_caption_is_active});
+    saveCaptionsIsAvtive(_default_caption_is_active)
+
 
 } )
 

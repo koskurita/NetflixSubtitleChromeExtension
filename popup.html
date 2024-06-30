@@ -1,68 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="popup.css" />
     <title>Netflix Subtitle Translator</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-      }
-      #languageSelect {
-        width: 100%;
-        padding: 5px;
-      }
-    </style>
   </head>
   <body>
     <h1>Subtitle Translator</h1>
-    <form id="boxWidthSlider">
-      <label for="boxWidth">Width</label>
-      <input
-        name="boxWidth"
-        type="range"
-        id="adjustBoxWidth"
-        min="1"
-        max="100"
-        value="30"
-      />
-      <output
-        id="boxWidthOutput"
-        name="result"
-        for="adjustBoxWidth"
-        form="boxWidthForm"
-      ></output>
-    </form>
-
-    <form id="fontSizeSlider">
-      <label for="fontSize">Font Size</label>
-      <input
-        name="fontSize"
-        type="range"
-        id="adjustFontSize"
-        min="15"
-        max="60"
-        value="31"
-      />
-      <output
-        id="fontSizeOutput"
-        name="fontSizeOutput"
-        for="adjustFontSize"
-        form="fontSizeForm"
-      ></output>
-      <div id="displayFontSize">a A</div>
-    </form>
-
-    <div>
-      <button id="resetToDefault" type="button">Reset Button</button>
-    </div>
-    <div>
-        <div>Hide Original Captions</div>>
+    <div class="grid-container">
+      <div class="grid-item">
+        <form id="boxWidthSlider">
+          <div class="slider-wrapper ">
+            <label for="adjustBoxWidth"> Width </label>
+            <input
+              name="boxWidth"
+              type="range"
+              id="adjustBoxWidth"
+              min="1"
+              max="100"
+              value="30"
+            />
+            <output
+              id="boxWidthOutput"
+              name="result"
+              for="adjustBoxWidth"
+              form="boxWidthForm"
+            ></output>
+          </div>
+        </form>
+      </div>
+      <div class="grid-item">
+        <form id="fontSizeSlider">
+          <div class="slider-wrapper">
+            <label for="adjustFontSize">Font Size</label>
+            <input
+              name="fontSize"
+              type="range"
+              id="adjustFontSize"
+              min="15"
+              max="60"
+              value="31"
+            />
+            <output
+              id="fontSizeOutput"
+              name="fontSizeOutput"
+              for="adjustFontSize"
+              form="fontSizeForm"
+            ></output>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="grid-item" id="displayFontSize">a A</div> -->
+      <div class="grid-item">
+        <div>Hide Original Captions</div>
         <label class="switch">
-            <input type="checkbox" id="adjustCaption">
-            <span class="slider round"></span>
-          </label>
+          <input type="checkbox" id="adjustCaption" />
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <div class="grid-item">
+        <button id="resetToDefault" type="button">Reset Button</button>
+      </div>
     </div>
-
-            <script src="popup.js"></script>
+    <script src="popup.js"></script>
   </body>
 </html>

@@ -59,7 +59,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 function hideNetflixCaptions(originalCaptionIsActive){
   setHideCaptions(originalCaptionIsActive)
-  
 }
 
 
