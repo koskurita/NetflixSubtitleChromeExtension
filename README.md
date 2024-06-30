@@ -12,7 +12,7 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 ## How to use
 1. Go to Netflix.com
-2. Left click, and press translate. Choose your target language.&nbsp;&nbsp;&nbsp;&nbsp;Side note, this chrome extension uses your browser's native translator, because google translate API costs $$. It's a little annoying but it's a workaround that works ¯\_(ツ)_/¯.
+2. Left click, and press translate. Choose your target language.&nbsp;&nbsp;&nbsp;&nbsp;
 
 4. Select the chrome extension, and click on the button so it's on.
 
