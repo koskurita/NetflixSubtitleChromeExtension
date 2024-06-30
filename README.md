@@ -12,14 +12,15 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 ## How to use
 1. Go to Netflix.com
-2. Left click, and press translate. Choose your target language.&nbsp;&nbsp;&nbsp;&nbsp;
+2. Right click and press translate. Choose your target language.&nbsp;&nbsp;&nbsp;&nbsp;
 
-4. Select the chrome extension, and click on the button so it's on.
+4. Translated Subtitles in your target language should appear.
 
-6. Now, you will have two subtitles, one in original and one in your target language.
-
-## Functionalities to add
-1. Setting for text size and color.
+## Functionalities 
+1. The translated text box can be dragged around the screen.
+2. Font size and textbox width can be adjusted using the slider bar in the extension's popup.
+3. Toggle off/on the original captions using the "Hide Original Captions" button.
+4. To reset all settings, click on "Reset"
 
 ## Prerequisites
 Chrome
