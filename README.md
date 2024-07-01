@@ -1,5 +1,9 @@
 #  Netflix Dual Subtitle Chrome Extension
 
+![Example Image](demo-images/demo-1.png)
+
+
+
 ## Motivation
 I'm learning Spanish and thought that it would be a great idea to have two subtitles, one in Spanish and one in English would be useful while watching shows in Spanish.
 Sometimes Netflix would not offer Spanish as an option for English shows, and this would be able to bypass that.
