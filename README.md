@@ -30,7 +30,8 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 ## Functionalities 
 &nbsp;
-![Step 3](demo-images/extention-popup.png | width = 100)
+<img src="https://github.com/koskurita/NetflixSubtitleChromeExtension/blob/main/demo-images/extention-popup.png" width="200">
+
 &nbsp;
 1. The translated text box can be dragged around the screen.
 2. Font size and textbox width can be adjusted using the slider bar in the extension's popup.
