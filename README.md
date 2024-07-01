@@ -17,12 +17,13 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 ## How to use
 1. Go to Netflix.com
 2. Right click and press translate. Choose your target language.&nbsp;&nbsp;&nbsp;&nbsp;
-   ![Example Image](demo-images/enabletranslation.png)
-   ![Example Image](demo-images/languageselect.png)
+   ![Step 1](demo-images/enabletranslation.png)
+   ![Step 2](demo-images/languageselect.png)
 
 4. Translated Subtitles in your target language should appear.
 
-![Example Image](demo-images/extension-popup.png)
+![Popup](demo-images/extension-popup.png)
+
 
 ## Functionalities 
 1. The translated text box can be dragged around the screen.
