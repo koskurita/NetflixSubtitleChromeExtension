@@ -39,7 +39,10 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 ## Functionalities 
 &nbsp;
-<img src="https://github.com/koskurita/NetflixSubtitleChromeExtension/blob/main/demo-images/extention-popup.png" width="200">
+
+<p align="center"><img src="https://github.com/koskurita/NetflixSubtitleChromeExtension/blob/main/demo-images/extention-popup.png" width="200">
+</p>
+
 
 &nbsp;
 1. The translated text box can be dragged around the screen.
