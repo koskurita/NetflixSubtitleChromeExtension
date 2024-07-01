@@ -22,10 +22,10 @@ Sometimes Netflix would not offer Spanish as an option for English shows, and th
 
 4. Translated Subtitles in your target language should appear.
 
-![Popup](demo-images/extension-popup.png)
 
 
 ## Functionalities 
+![Step 3](demo-images/extention-popup.png)
 1. The translated text box can be dragged around the screen.
 2. Font size and textbox width can be adjusted using the slider bar in the extension's popup.
 3. Toggle off/on the original captions using the "Hide Original Captions" button.
