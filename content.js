@@ -15,14 +15,20 @@ let hideCaptions;
 function setHideCaptions(val){
     hideCaptions = val;
     if (val === false){
-        document.querySelector('.player-timedtext').classList.remove("captionsIsOff")
+        const originalBox = document.querySelector('.player-timedtext')
+        if (originalBox !== null){
+            originalBox.classList.remove("captionsIsOff")
+        }
         const allCaptions = document.querySelectorAll(".captionsIsOff")
         allCaptions.forEach((oneCaption)=>{
           oneCaption.classList.remove("captionsIsOff")
         })
     }
     else {
-        document.querySelector('.player-timedtext').classList.add("captionsIsOff")
+        const originalBox = document.querySelector('.player-timedtext')
+        if (originalBox !== null){
+            originalBox.classList.add("captionsIsOff")
+        }
     }
 }
 

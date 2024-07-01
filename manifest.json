@@ -1,32 +1,26 @@
 {
-    "manifest_version": 3,
-    "name": "Netflix Subtitle Translator",
-    "version": "1.0",
-    "description": "Translates Netflix subtitles in real-time.",
-    "permissions": [
-      "activeTab",
-      "scripting",
-      "storage"
-    ],
-    "host_permissions": [
-      "https://www.netflix.com/watch/*"
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://www.netflix.com/*"],
-        "css": ["content.css"],
-        "js": ["content.js"]
-      }
-    ],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "images/icon16.png",
-        "48": "images/icon48.png",
-        "128": "images/icon128.png"
-      }
+  "manifest_version": 3,
+  "name": "Netflix Subtitle Translator",
+  "version": "1.0",
+  "description": "Translates Netflix subtitles in real-time.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["https://www.netflix.com/watch/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
     }
   }
+}

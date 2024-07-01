@@ -138,7 +138,6 @@ document.getElementById('resetToDefault').addEventListener("click",(event)=>{
 
     //reset placement
     chrome.runtime.sendMessage({ action: 'updateContainerPlacement'});
-
     const captionIsActiveButton = document.getElementById("adjustCaption")
     captionIsActiveButton.checked = _default_caption_is_active
     chrome.storage.local.set({ hideCaptionIsActive: _default_caption_is_active });
