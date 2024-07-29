@@ -2,7 +2,8 @@
 
 ![Example Image](demo-images/demo-1.png)
 
-
+## Chrome Store Link
+https://chromewebstore.google.com/detail/netflix-subtitle-translat/lhdphaeipialmjelannmaeoejdmcgclk?authuser=0&hl=en
 
 ## Motivation
 I'm learning Spanish and thought that it would be a great idea to have two subtitles, one in Spanish and one in English would be useful while watching shows in Spanish.
